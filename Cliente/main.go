@@ -4,42 +4,44 @@ import (
 	"fmt"
 )
 
-// Word contem a palavra e o estado se ela foi encontrada ou não
 type Word struct {
 	palavra string
-	achado  bool
+	achado bool
 }
 
 var score int
 
+
 // Pegar palavra do json
-func getWord() []Word {
+func getWord() []Word{
 	var listaWord = []Word{
-		Word{
+		Word {
 			palavra: "leite",
 		},
-		Word{
+		Word {
 			palavra: "elite",
 		},
-		Word{
+		Word {
 			palavra: "tele",
 		},
-		Word{
+		Word {
 			palavra: "til",
 		},
-		Word{
+		Word {
 			palavra: "lei",
 		},
-		Word{
+		Word {
 			palavra: "ele",
 		},
+		
 	}
-
+	
 	return listaWord
 }
 
-func printa(listaPalavra []Word) {
 
+func printa(listaPalavra[] Word){
+	
 	fmt.Printf("\u001b[41m")
 	for i := 0; i < len(listaPalavra); i++ {
 		if listaPalavra[i].achado == true {
@@ -50,7 +52,7 @@ func printa(listaPalavra []Word) {
 		} else {
 			fmt.Printf("\x1b[37;1m")
 			fmt.Printf("\u001b[41m")
-			for j := len(listaPalavra[i].palavra); j > 0; j-- {
+			for j:= len(listaPalavra[i].palavra); j > 0 ; j -- {
 				fmt.Printf("#")
 			}
 			fmt.Println()
@@ -60,50 +62,56 @@ func printa(listaPalavra []Word) {
 }
 
 //Checar se a palavra digitada existe dentro da palavra inicial
-func check(listaPalavra []Word, sugestao string) {
+func check(listaPalavra[] Word ,sugestao string){
 	for i := 0; i < len(listaPalavra); i++ {
 		if sugestao == listaPalavra[i].palavra {
 			listaPalavra[i].achado = true
-			break
+			break		
 		}
 	}
 	fmt.Println("Palavra nao encontrada")
 }
 
-func play() {
+func play(){
 
-	var listaPalavra []Word = getWord()
+	var listaPalavra[] Word = getWord()
 	var sugestao string
-
+	
 	printa(listaPalavra)
 
-	for sugestao != "/q" {
+	for sugestao != "/q"{
 		fmt.Println("Digite uma palavra")
 		fmt.Scanf("%s\n", &sugestao)
 		check(listaPalavra, sugestao)
-
+		
 		fmt.Println("\u001b[2J")
-
-		printa(listaPalavra)
+		
+		printa(listaPalavra)	
+		
 
 	}
 }
+
 
 // /q sai do jogo
 // /new uma palavra nova
 // /score retorna o score
 
-func main() {
+func main(){
 	var menu string
-
+	
 	fmt.Println("Menu:\n Para começar um jogo digite /new \n Para sair /q")
 	fmt.Scanf("%s\n", &menu)
-
+	
 	switch menu {
 	case "/new":
 		play()
 	case "/score":
 		fmt.Println("nao ta feito ainda...")
 	}
-
+	
 }
+	
+
+
+	
