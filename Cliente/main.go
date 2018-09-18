@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	// "math/rand"
+	"math/rand"
+	"time"
 )
 
 // Word contem a palavra e o estado se ela foi encontrada ou não
@@ -39,12 +40,12 @@ func getWord() []Word {
 	return listaWord
 }
 
-
 // printa as palavras na tela
 func printa(listaPalavra []Word) {
-
+	palavraMisturada := randomizeWord(listaPalavra[0].palavra)
+	fmt.Println("\n", palavraMisturada)
 	fmt.Println("\u001b[40;1m") //fundo preto
-	fmt.Printf("\u001b[31;1m") // letra vermelha
+	fmt.Printf("\u001b[31;1m")  // letra vermelha
 	for i := 0; i < len(listaPalavra); i++ {
 		if listaPalavra[i].achado == true {
 			fmt.Printf("\x1b[37;1m") //negrito
@@ -52,7 +53,7 @@ func printa(listaPalavra []Word) {
 			fmt.Println(listaPalavra[i].palavra)
 			fmt.Printf("\u001b[0m") // reset
 		} else {
-			fmt.Printf("\x1b[37;1m") // negrito
+			fmt.Printf("\x1b[37;1m")   // negrito
 			fmt.Printf("\u001b[31;1m") // letra vermelha
 			fmt.Printf("\u001b[40;1m") // fundo preto
 			for j := len(listaPalavra[i].palavra); j > 0; j-- {
@@ -64,8 +65,8 @@ func printa(listaPalavra []Word) {
 	fmt.Printf("\u001b[0m") // reset
 }
 
-//Checar se a palavra digitada existe dentro da palavra inicial
-func check(listaPalavra []Word, sugestao string) string{
+// Checar se a palavra digitada existe dentro da palavra inicial
+func check(listaPalavra []Word, sugestao string) string {
 	if sugestao == "/q" {
 		return "sair"
 	}
@@ -82,9 +83,36 @@ func check(listaPalavra []Word, sugestao string) string{
 	return "naoEncontrado"
 }
 
-func randomWord(palavra string) string{
-	
- 	return palavra
+// change recebe uma palavra e altera a ordem das letras
+func change(palavraOrig string) string {
+	palavra := []byte(palavraOrig)
+	s1 := rand.NewSource(time.Now().UnixNano())
+	r1 := rand.New(s1)
+	for k := r1.Intn(600); k > 0; k-- {
+		for i := 0; i < len(palavra); i++ {
+			for j := 0; j < len(palavra); j++ {
+				if i != j {
+					//fmt.Println(i, j, k)
+					rand.Shuffle(len(palavra), func(i, j int) {
+						palavra[i], palavra[j] = palavra[j], palavra[i]
+					})
+				}
+			}
+		}
+	}
+	str := string(palavra[:])
+	//fmt.Println(str)
+	return str
+
+}
+
+// randomizeWord recebe uma palavra e garante que a funcao change retorne uma palavra diferente da original
+func randomizeWord(palavra string) string {
+	str := palavra
+	for str == palavra {
+		str = change(str)
+	}
+	return str
 }
 
 func play() {
@@ -92,7 +120,7 @@ func play() {
 	var listaPalavra []Word = getWord()
 	var sugestao string
 	var retorno string
-	var word string = randomWord(listaPalavra[0].palavra)
+	var word string = randomizeWord(listaPalavra[0].palavra) // Checar se vai printar aqui ou na print!!!
 
 	printa(listaPalavra)
 
@@ -102,30 +130,30 @@ func play() {
 		// fmt.Printf("\u001b[0m") // reset
 		fmt.Println("Digite uma palavra")
 		fmt.Scanf("%s\n", &sugestao)
-		
+
 		fmt.Printf("\u001b[2J") // limpa a tela
 
 		retorno = check(listaPalavra, sugestao)
-		
+
 		switch retorno {
 		case "naoEncontrado":
-			fmt.Printf("\u001b[43m") // fundo amarelo
+			fmt.Printf("\u001b[43m")   // fundo amarelo
 			fmt.Printf("\u001b[30;1m") // letra petra
 			fmt.Println("-Palavra não encontrada-")
 			fmt.Printf("\u001b[0m") // reset
 		case "duplicado":
-			fmt.Printf("\u001b[43m") // fundo amarelo
+			fmt.Printf("\u001b[43m")   // fundo amarelo
 			fmt.Printf("\u001b[30;1m") // letra preta
 			fmt.Println("-Você já encontrou essa palavra-")
 			fmt.Printf("\u001b[0m") // reset
 		}
 
 		printa(listaPalavra)
-	
+
 	}
-	
+
 	fmt.Printf("\u001b[2J") // limpa a tela
-	
+
 	for i := 0; i < len(listaPalavra); i++ {
 		fmt.Printf("\x1b[37;1m") //negrito
 		fmt.Printf("\u001b[42m") //fundo verde
