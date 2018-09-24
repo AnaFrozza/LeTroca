@@ -4,59 +4,60 @@ import (
 	"fmt"
 	"math/rand"
 	"time"
+	"net/http"
+	"log"
+	"os"
+	"io/ioutil"
+	"encoding/json"
 )
 
 // Word contem a palavra e o estado se ela foi encontrada ou não
 type Word struct {
-	palavra string
-	achado  bool
+	Palavra string
+	Achado  bool 
 }
+
 
 var score int
 
 // Pegar palavra do json
-func getWord() []Word {
-	var listaWord = []Word{
-		Word{
-			palavra: "leite",
-		},
-		Word{
-			palavra: "elite",
-		},
-		Word{
-			palavra: "tele",
-		},
-		Word{
-			palavra: "til",
-		},
-		Word{
-			palavra: "lei",
-		},
-		Word{
-			palavra: "ele",
-		},
+func getWord() []Word{
+	
+	web, err := http.Get("http://127.0.0.1:8080/new")
+
+	if(err != nil){
+		fmt.Print(err.Error())
+		os.Exit(1)
 	}
 
+	webData, err := ioutil.ReadAll(web.Body)
+	if(err != nil){
+		log.Fatal(err)
+	}
+
+	var	listaWord []Word
+	json.Unmarshal(webData, &listaWord)
+	fmt.Println(listaWord)
 	return listaWord
 }
 
 // printa as palavras na tela
 func printa(listaPalavra []Word) {
-	palavraMisturada := randomizeWord(listaPalavra[0].palavra)
+	palavraMisturada := randomizeWord(listaPalavra[0].Palavra)
 	fmt.Println("\n", palavraMisturada)
 	fmt.Println("\u001b[40;1m") //fundo preto
 	fmt.Printf("\u001b[31;1m")  // letra vermelha
 	for i := 0; i < len(listaPalavra); i++ {
-		if listaPalavra[i].achado == true {
+		if listaPalavra[i].Achado == true {
 			fmt.Printf("\x1b[37;1m") //negrito
 			fmt.Printf("\u001b[42m") //fundo verde
-			fmt.Println(listaPalavra[i].palavra)
+			fmt.Println(listaPalavra[i].Palavra)
 			fmt.Printf("\u001b[0m") // reset
 		} else {
 			fmt.Printf("\x1b[37;1m")   // negrito
 			fmt.Printf("\u001b[31;1m") // letra vermelha
 			fmt.Printf("\u001b[40;1m") // fundo preto
-			for j := len(listaPalavra[i].palavra); j > 0; j-- {
+			for j := len(listaPalavra[i].Palavra); j > 0; j-- {
 				fmt.Printf("#")
 			}
 			fmt.Println()
@@ -72,11 +73,11 @@ func check(listaPalavra []Word, sugestao string) string {
 	}
 
 	for i := 0; i < len(listaPalavra); i++ {
-		if sugestao == listaPalavra[i].palavra {
-			if listaPalavra[i].achado == true {
+		if sugestao == listaPalavra[i].Palavra {
+			if listaPalavra[i].Achado == true {
 				return "duplicado"
 			}
-			listaPalavra[i].achado = true
+			listaPalavra[i].Achado = true
 			return "achei"
 		}
 	}
@@ -120,7 +121,7 @@ func play() {
 	var listaPalavra []Word = getWord()
 	var sugestao string
 	var retorno string
-	var word string = randomizeWord(listaPalavra[0].palavra) // Checar se vai printar aqui ou na print!!!
+	var word string = randomizeWord(listaPalavra[0].Palavra) // Checar se vai printar aqui ou na print!!!
 
 	printa(listaPalavra)
 
@@ -157,7 +158,7 @@ func play() {
 	for i := 0; i < len(listaPalavra); i++ {
 		fmt.Printf("\x1b[37;1m") //negrito
 		fmt.Printf("\u001b[42m") //fundo verde
-		fmt.Println(listaPalavra[i].palavra)
+		fmt.Println(listaPalavra[i].Palavra)
 		fmt.Printf("\u001b[0m") // reset
 	}
 }
