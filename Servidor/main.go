@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -8,32 +9,35 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Word Bla Bla bla
 type Word struct {
-	palavra string
+	Palavra string
 	achado  bool
 }
 
-// Adicionando palavras na lista de palavras para teste
-// 5 palavras
-var listaWord = []Word{
-	Word{
-		palavra: "leite",
-	},
-	Word{
-		palavra: "elite",
-	},
-	Word{
-		palavra: "tele",
-	},
-	Word{
-		palavra: "til",
-	},
-	Word{
-		palavra: "lei",
-	},
-	Word{
-		palavra: "ele",
-	},
+// getWord le do banco de dados uma lista de Palavras
+func getWord() []Word {
+	var listaWord = []Word{
+		{
+			Palavra: "leite",
+		},
+		{
+			Palavra: "elite",
+		},
+		{
+			Palavra: "tele",
+		},
+		{
+			Palavra: "til",
+		},
+		{
+			Palavra: "lei",
+		},
+		{
+			Palavra: "ele",
+		},
+	}
+	return listaWord
 }
 
 func main() {
@@ -45,15 +49,26 @@ func main() {
 	//log em caso de erros
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
+
+//Index bla bla bla
 func Index(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Welcome!")
+	fmt.Fprintln(w, "index")
 }
+
+// New descrever
 func New(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "new!")
+	var listaPalavra = getWord()
+	json.NewEncoder(w).Encode(listaPalavra)
+
+	//fmt.Fprintln(w, listaPalavra)
 }
+
+// Score descrever
 func Score(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "score!")
 }
+
+// Save descrever
 func Save(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "save")
 }
