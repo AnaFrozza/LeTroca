@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-
+	"math/rand"
+	"time"
 	"github.com/gorilla/mux"
 )
 
@@ -17,27 +18,16 @@ type Word struct {
 
 // getWord le do banco de dados uma lista de Palavras
 func getWord() []Word {
-	var listaWord = []Word{
-		{
-			Palavra: "leite",
-		},
-		{
-			Palavra: "elite",
-		},
-		{
-			Palavra: "tele",
-		},
-		{
-			Palavra: "til",
-		},
-		{
-			Palavra: "lei",
-		},
-		{
-			Palavra: "ele",
-		},
+	s1 := rand.NewSource(time.Now().UnixNano())
+	r1 := rand.New(s1)
+	var listaWord = [][]Word{
+		{{Palavra: "leite",},{Palavra: "elite",},{Palavra: "tele",},{Palavra: "til",},{Palavra: "lei",},{Palavra: "ele",}},
+		{{Palavra: "manter",},{Palavra:"trena",},{Palavra:"menta",},{Palavra:"marte",},{Palavra:"trem",},{Palavra:"reta"},{Palavra:"meta",},{Palavra:"mar",},{Palavra:"ema",}},
+		{{Palavra:"tropa",},{Palavra:"trapo",},{Palavra:"prato",},{Palavra:"tora",},{Palavra:"topa",},{Palavra:"rato",},{Palavra:"pra",},{Palavra:"por",},{Palavra:"aro",}},
+		{{Palavra:"remoto",},{Palavra:"termo",},{Palavra:"temor",},{Palavra:"metro",},{Palavra:"toro",},{Palavra:"reto",},{Palavra:"remo",},{Palavra:"ter",},{Palavra:"mor",}},
+		{{Palavra:"calhar",},{Palavra:"racha",},{Palavra:"achar",},{Palavra:"cara",},{Palavra:"acha",},{Palavra:"lar",},{Palavra:"cha",},{Palavra:"ala",}},
 	}
-	return listaWord
+	return listaWord[r1.Intn(len(listaWord))]
 }
 
 func main() {

@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"math/rand"
 	"time"
 	"net/http"
 	"log"
 	"os"
 	"io/ioutil"
-	"encoding/json"
+	"encoding/json"	
 )
 
 // Word contem a palavra e o estado se ela foi encontrada ou não
@@ -16,7 +17,6 @@ type Word struct {
 	Palavra string
 	Achado  bool 
 }
-
 
 var score int
 
@@ -37,14 +37,14 @@ func getWord() []Word{
 
 	var	listaWord []Word
 	json.Unmarshal(webData, &listaWord)
-	fmt.Println(listaWord)
+	fmt.Println()
 	return listaWord
 }
 
 // printa as palavras na tela
 func printa(listaPalavra []Word) {
-	palavraMisturada := randomizeWord(listaPalavra[0].Palavra)
-	fmt.Println("\n", palavraMisturada)
+	// palavraMisturada := randomizeWord(listaPalavra[0].Palavra)
+	// fmt.Println("\n", palavraMisturada)
 	fmt.Println("\u001b[40;1m") //fundo preto
 	fmt.Printf("\u001b[31;1m")  // letra vermelha
 	for i := 0; i < len(listaPalavra); i++ {
@@ -127,7 +127,8 @@ func play() {
 
 	for sugestao != "/q" {
 		// fmt.Printf("\u001b#3 \u001b#4") // letra grande
-		fmt.Println(word)
+		fmt.Println()
+		fmt.Println(strings.ToUpper(word))
 		// fmt.Printf("\u001b[0m") // reset
 		fmt.Println("Digite uma palavra")
 		fmt.Scanf("%s\n", &sugestao)
@@ -160,7 +161,9 @@ func play() {
 		fmt.Printf("\u001b[42m") //fundo verde
 		fmt.Println(listaPalavra[i].Palavra)
 		fmt.Printf("\u001b[0m") // reset
+		
 	}
+	fmt.Println()
 }
 
 func main() {
