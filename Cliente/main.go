@@ -24,7 +24,7 @@ type Word struct {
 	Achado  bool
 }
 
-var score int = 0
+var score int
 
 // Pegar palavra do servidor
 func getWord() []Word {
@@ -150,10 +150,10 @@ func randomizeWord(palavra string) string {
 
 func play() {
 
-	var listaPalavra []Word = getWord()
+	var listaPalavra = getWord()
 	var sugestao string
 	var retorno string
-	var word string = randomizeWord(listaPalavra[0].Palavra) // Checar se vai printar aqui ou na print!!!
+	var word = randomizeWord(listaPalavra[0].Palavra) // Checar se vai printar aqui ou na print!!!
 
 	printa(listaPalavra)
 
@@ -182,7 +182,7 @@ func play() {
 			fmt.Printf("\u001b[0m") // reset
 		case "novo":
 			play()
-			//listaPalavra = getWord() // possivel solução para o problema de recursividade * não testado *
+			//listaPalavra = getWord() // possivel solução para o problema de recursividade * não testado*
 		}
 
 		printa(listaPalavra)
@@ -219,7 +219,7 @@ func main() {
 	case "/new":
 		play()
 	case "/score":
-		var listaPontos []Ponto = getScore()
+		var listaPontos = getScore()
 		fmt.Println(listaPontos)
 	}
 }
