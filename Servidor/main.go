@@ -10,6 +10,12 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Pontos Bla Bla Bla
+type Pontos struct{
+	Score int
+	Nome string
+}
+
 // Word Bla Bla bla
 type Word struct {
 	Palavra string

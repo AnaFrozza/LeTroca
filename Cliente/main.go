@@ -12,15 +12,21 @@ import (
 	"encoding/json"	
 )
 
+// Pontos Bla Bla Bla
+type Ponto struct{
+	Score int
+	Nome string
+}
+
 // Word contem a palavra e o estado se ela foi encontrada ou não
 type Word struct {
 	Palavra string
 	Achado  bool 
 }
 
-var score int
+var score int = 0
 
-// Pegar palavra do json
+// Pegar palavra do servidor
 func getWord() []Word{
 	
 	web, err := http.Get("http://127.0.0.1:8080/new")
@@ -39,6 +45,27 @@ func getWord() []Word{
 	json.Unmarshal(webData, &listaWord)
 	fmt.Println()
 	return listaWord
+}
+
+// Pegar score do servidor
+func getScore() []Ponto{
+	
+	web, err := http.Get("http://127.0.0.1:8080/score")
+
+	if(err != nil){
+		fmt.Print(err.Error())
+		os.Exit(1)
+	}
+
+	webData, err := ioutil.ReadAll(web.Body)
+	if(err != nil){
+		log.Fatal(err)
+	}
+
+	var	listaScore []Ponto
+	json.Unmarshal(webData, &listaScore)
+	fmt.Println()
+	return listaScore
 }
 
 // printa as palavras na tela
@@ -72,12 +99,17 @@ func check(listaPalavra []Word, sugestao string) string {
 		return "sair"
 	}
 
+	if sugestao == "/new"{
+		return "novo"
+	}
+
 	for i := 0; i < len(listaPalavra); i++ {
 		if sugestao == listaPalavra[i].Palavra {
 			if listaPalavra[i].Achado == true {
 				return "duplicado"
 			}
 			listaPalavra[i].Achado = true
+			score = score + 1
 			return "achei"
 		}
 	}
@@ -148,6 +180,8 @@ func play() {
 			fmt.Printf("\u001b[30;1m") // letra preta
 			fmt.Println("-Você já encontrou essa palavra-")
 			fmt.Printf("\u001b[0m") // reset
+		case "novo":
+			play()
 		}
 
 		printa(listaPalavra)
@@ -163,6 +197,14 @@ func play() {
 		fmt.Printf("\u001b[0m") // reset
 		
 	}
+	
+	//sem servidor
+	var jogador string
+	fmt.Println("Informe seu nome:")
+	fmt.Scanf("%s\n", &jogador)
+	fmt.Printf("\u001b[2J") // limpa a tela
+	fmt.Println("Jogador: ", jogador)
+	fmt.Println("Score: ", score)
 	fmt.Println()
 }
 
@@ -176,6 +218,7 @@ func main() {
 	case "/new":
 		play()
 	case "/score":
-		fmt.Println("nao ta feito ainda...")
+		var listaPontos []Ponto = getScore()
+		fmt.Println(listaPontos)
 	}
 }
