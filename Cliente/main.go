@@ -1,68 +1,68 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"strings"
-	"math/rand"
-	"time"
-	"net/http"
-	"log"
-	"os"
 	"io/ioutil"
-	"encoding/json"	
+	"log"
+	"math/rand"
+	"net/http"
+	"os"
+	"strings"
+	"time"
 )
 
-// Pontos Bla Bla Bla
-type Ponto struct{
+// Ponto guarda a pontuação do jogador e o nome para ser enviada para o servidor posteriormente
+type Ponto struct {
 	Score int
-	Nome string
+	Nome  string
 }
 
 // Word contem a palavra e o estado se ela foi encontrada ou não
 type Word struct {
 	Palavra string
-	Achado  bool 
+	Achado  bool
 }
 
 var score int = 0
 
 // Pegar palavra do servidor
-func getWord() []Word{
-	
+func getWord() []Word {
+
 	web, err := http.Get("http://127.0.0.1:8080/new")
 
-	if(err != nil){
+	if err != nil {
 		fmt.Print(err.Error())
 		os.Exit(1)
 	}
 
 	webData, err := ioutil.ReadAll(web.Body)
-	if(err != nil){
+	if err != nil {
 		log.Fatal(err)
 	}
 
-	var	listaWord []Word
+	var listaWord []Word
 	json.Unmarshal(webData, &listaWord)
 	fmt.Println()
 	return listaWord
 }
 
 // Pegar score do servidor
-func getScore() []Ponto{
-	
+func getScore() []Ponto {
+
 	web, err := http.Get("http://127.0.0.1:8080/score")
 
-	if(err != nil){
+	if err != nil {
 		fmt.Print(err.Error())
 		os.Exit(1)
 	}
 
 	webData, err := ioutil.ReadAll(web.Body)
-	if(err != nil){
+	if err != nil {
 		log.Fatal(err)
 	}
 
-	var	listaScore []Ponto
+	var listaScore []Ponto
 	json.Unmarshal(webData, &listaScore)
 	fmt.Println()
 	return listaScore
@@ -99,7 +99,7 @@ func check(listaPalavra []Word, sugestao string) string {
 		return "sair"
 	}
 
-	if sugestao == "/new"{
+	if sugestao == "/new" {
 		return "novo"
 	}
 
@@ -182,6 +182,7 @@ func play() {
 			fmt.Printf("\u001b[0m") // reset
 		case "novo":
 			play()
+			//listaPalavra = getWord() // possivel solução para o problema de recursividade * não testado *
 		}
 
 		printa(listaPalavra)
@@ -195,9 +196,9 @@ func play() {
 		fmt.Printf("\u001b[42m") //fundo verde
 		fmt.Println(listaPalavra[i].Palavra)
 		fmt.Printf("\u001b[0m") // reset
-		
+
 	}
-	
+
 	//sem servidor
 	var jogador string
 	fmt.Println("Informe seu nome:")
